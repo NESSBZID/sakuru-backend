@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -8,6 +8,7 @@ import entities from './entities';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from './tasks/tasks.module';
 import { HttpModule } from './http/http.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -44,7 +45,14 @@ import { HttpModule } from './http/http.module';
     TasksModule,
   ],
   controllers: [],
-  providers: [AppService, Logger],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+    AppService,
+    Logger,
+  ],
   exports: [Logger, HttpModule],
 })
 export class AppModule {}

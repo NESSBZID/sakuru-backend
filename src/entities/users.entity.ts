@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Index('users_api_key_uindex', ['api_key'], { unique: true })
@@ -15,12 +16,14 @@ export class Users {
   @Column('varchar', { name: 'safe_name', unique: true, length: 32 })
   safe_name: string;
 
+  @Exclude()
   @Column('varchar', { name: 'email', unique: true, length: 254 })
   email: string;
 
   @Column('int', { name: 'priv', default: 1 })
   priv: number;
 
+  @Exclude()
   @Column('char', { name: 'pw_bcrypt', length: 60 })
   pw_bcrypt: string;
 
@@ -60,9 +63,11 @@ export class Users {
   @Column('varchar', { name: 'userpage_content', nullable: true, length: 2048 })
   userpage_content: string | null;
 
+  @Exclude()
   @Column('char', { name: 'api_key', nullable: true, unique: true, length: 36 })
   api_key: string | null;
 
+  @Exclude()
   @Column('tinyint', {
     name: 'ban_hwid',
     nullable: true,

@@ -19,6 +19,9 @@ export class V1Service {
   async getServerStats(): Promise<ServerStatsDto> {
     const playersTotal = await this.userRepository.count();
     const playersOnline = await this.redis.llen('sakuru:online_players');
+    const multiplayerMatches = await this.redis.llen(
+      'sakuru:multiplayer_matches',
+    );
     const customRankedMapsCount = await this.mapRepository.count({
       where: {
         frozen: true,
@@ -28,6 +31,7 @@ export class V1Service {
     return {
       players_total: playersTotal,
       players_online: playersOnline,
+      multiplayer_matches: multiplayerMatches,
       custom_ranked_maps_count: customRankedMapsCount,
     };
   }

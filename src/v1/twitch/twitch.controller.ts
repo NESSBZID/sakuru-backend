@@ -1,6 +1,7 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import {
   Controller,
+  Get,
   Logger,
   Post,
   RawBodyRequest,
@@ -72,5 +73,13 @@ export class TwitchControllerV1 {
       globalState.tiwtchStreamers.splice(streamerIndex, 1);
       this.logger.log(`Removed ${streamerId} from the streamers list.`);
     }
+  }
+
+  @Get('streamers')
+  async getStreamers(): Promise<any> {
+    return {
+      streamers: globalState.tiwtchStreamers,
+      total: globalState.tiwtchStreamers.length,
+    };
   }
 }
