@@ -15,12 +15,14 @@ export class AppService {
   async onApplicationBootstrap(): Promise<void> {
     this.logger.log('Connecting to Twitch...', 'AppBootstrap');
 
+    // Connect to Twitch API.
     globalState.twitchClient = new TwitchApi({
       client_id: this.config.get('TWITCH_CLIENT_ID'),
       client_secret: this.config.get('TWITCH_CLIENT_SECRET'),
     });
     const tiwtchAccessToken = await globalState.twitchClient.getAccessToken();
 
+    // Set default headers for Twitch API.
     this.httpService.axiosRef.defaults.headers.common[
       'Authorization'
     ] = `Bearer ${tiwtchAccessToken}`;

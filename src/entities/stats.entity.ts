@@ -28,7 +28,7 @@ export class Stats {
     precision: 6,
     scale: 3,
     // eslint-disable-next-line prettier/prettier
-    default: 0.000,
+    default: 0.0,
   })
   acc: number;
 

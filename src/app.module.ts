@@ -9,12 +9,15 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from './tasks/tasks.module';
 import { HttpModule } from './http/http.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { Agent } from 'https';
 
 @Module({
   imports: [
     HttpModule.register({
-      baseURL: 'https://api.twitch.tv/helix',
       timeout: 10000,
+      httpsAgent: new Agent({
+        rejectUnauthorized: false,
+      }),
     }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),

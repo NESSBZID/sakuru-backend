@@ -74,37 +74,39 @@ export class TwitchServiceV1 {
   }
 
   async unsubcribeFromEvent(broadcaster_user_id: string): Promise<void> {
-    this.httpService.get('/eventsub/subscriptions').then(async (response) => {
-      for (const subscription of response.data.data) {
-        if (
-          subscription.condition.broadcaster_user_id === broadcaster_user_id
-        ) {
-          await this.httpService
-            .delete(`/eventsub/subscriptions`, {
-              params: {
-                id: subscription.id,
-              },
-            })
-            .catch((error: AxiosError) => {
-              this.logger.error(error, 'TwitchWebhook');
-              throw new BadRequestException(error.message, {
-                cause: error.cause,
+    this.httpService
+      .get('https://api.twitch.tv/helix/eventsub/subscriptions')
+      .then(async (response) => {
+        for (const subscription of response.data.data) {
+          if (
+            subscription.condition.broadcaster_user_id === broadcaster_user_id
+          ) {
+            await this.httpService
+              .delete(`/eventsub/subscriptions`, {
+                params: {
+                  id: subscription.id,
+                },
+              })
+              .catch((error: AxiosError) => {
+                this.logger.error(error, 'TwitchWebhook');
+                throw new BadRequestException(error.message, {
+                  cause: error.cause,
+                });
               });
-            });
 
-          this.logger.log(
-            `Unsubscribed from ${subscription.type} (${broadcaster_user_id})`,
-            'TwitchWebhook',
-          );
+            this.logger.log(
+              `Unsubscribed from ${subscription.type} (${broadcaster_user_id})`,
+              'TwitchWebhook',
+            );
+          }
         }
-      }
-    });
+      });
   }
 
   async subscribeToEvent(broadcaster_user_id: string): Promise<void> {
     for (const type of ['stream.online', 'stream.offline']) {
       await this.httpService
-        .post('/eventsub/subscriptions', {
+        .post('https://api.twitch.tv/helix/eventsub/subscriptions', {
           type: type,
           version: '1',
           condition: {

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { MapEntity, UserEntity } from 'src/entities';
 import { Repository } from 'typeorm';
-import { ServerStatsDto } from './dto/serverStats.dto';
+import { IServerStats } from './interfaces/serverStats.interface';
 
 @Injectable()
 export class V1Service {
@@ -16,7 +16,7 @@ export class V1Service {
     @InjectRedis() private readonly redis: Redis,
   ) {}
 
-  async getServerStats(): Promise<ServerStatsDto> {
+  async getServerStats(): Promise<IServerStats> {
     const playersTotal = await this.userRepository.count();
     const playersOnline = await this.redis.llen('sakuru:online_players');
     const multiplayerMatches = await this.redis.llen(
