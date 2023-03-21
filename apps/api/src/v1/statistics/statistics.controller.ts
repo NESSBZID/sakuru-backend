@@ -13,4 +13,9 @@ export class StatisticsControllerV1 {
   async getServerRecords(@Query() query: ServerTopScoresInput) {
     return await this.statisticsService.getServerTopScores(query);
   }
+
+  @Get('server_stats')
+  async getServerStats() {
+    return await this.statisticsService.getServerStats();
+  }
 }
