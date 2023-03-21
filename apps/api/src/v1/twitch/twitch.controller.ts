@@ -1,29 +1,39 @@
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import {
   Controller,
-  Get,
-  Logger,
+  Inject,
   Post,
   RawBodyRequest,
   Req,
   UnauthorizedException,
+  UseFilters,
 } from '@nestjs/common';
 import { Request } from 'express';
-import Redis from 'ioredis';
-import { globalState } from 'apps/twitch/src/global.state';
 import { TwitchServiceV1 } from './twitch.service';
+import { ExceptionFilter } from '@shared/filters/rpc-exception.filter';
+import { ClientKafka } from '@nestjs/microservices';
 
+@UseFilters(new ExceptionFilter())
 @Controller({
   path: 'twitch',
   version: '1',
 })
 export class TwitchControllerV1 {
-  private readonly logger = new Logger(TwitchControllerV1.name);
-
   constructor(
     private readonly twitchService: TwitchServiceV1,
-    @InjectRedis() private readonly redis: Redis,
+    @Inject('TWITCH_SERVICE') private readonly kafkaTwitch: ClientKafka,
   ) {}
+
+  async onServiceInit() {
+    [
+      'events.subscribe',
+      'events.unsubscribe',
+      'webhook.online',
+      'webhook.offline',
+    ].forEach((key) => this.kafkaTwitch.subscribeToResponseOf(`twitch.${key}`));
+
+    await this.kafkaTwitch.connect();
+    await this.kafkaTwitch.send('twitch.events.subscribe', '8282828');
+  }
 
   @Post('webhook')
   async twitchWebhook(@Req() request: RawBodyRequest<Request>): Promise<void> {
@@ -37,49 +47,15 @@ export class TwitchControllerV1 {
       return request.body['challenge'];
 
     if (request.body['subscription']['type'] === 'stream.online') {
-      const stream = await globalState.twitchClient.getStreams({
-        channel: request.body['event']['broadcaster_user_login'],
-      });
-      const user = await this.twitchService.getUserByTwitch(
-        stream.data[0].user_id,
-      );
-      if (!user) return;
-
-      const isOnline = await this.redis.lpos('sakuru:online_players', user.id);
-      if (isOnline === null) return;
-
-      globalState.tiwtchStreamers.push({
-        osu_id: user.id,
-        twitch_id: stream.data[0].user_id,
-        title: stream.data[0].title,
-        username: stream.data[0].user_name,
-        thumb_url: stream.data[0].getThumbnailUrl({
-          width: 1920,
-          height: 1080,
-        }),
-      });
-
-      this.logger.log(
-        `Added ${user.name} (${stream.data[0].user_id}) to the streamers list.`,
+      this.kafkaTwitch.send(
+        'twitch.webhook.online',
+        request.body['event']['broadcaster_user_login'],
       );
     } else if (request.body['subscription']['type'] === 'stream.offline') {
-      const streamerId = request.body['event']['broadcaster_user_id'];
-      const streamerIndex = globalState.tiwtchStreamers.findIndex(
-        (streamer) => streamer.twitch_id === streamerId,
+      this.kafkaTwitch.send(
+        'twitch.webhook.offline',
+        request.body['event']['broadcaster_user_id'],
       );
-
-      if (streamerIndex === -1) return;
-
-      globalState.tiwtchStreamers.splice(streamerIndex, 1);
-      this.logger.log(`Removed ${streamerId} from the streamers list.`);
     }
-  }
-
-  @Get('streamers')
-  async getStreamers(): Promise<any> {
-    return {
-      streamers: globalState.tiwtchStreamers,
-      total: globalState.tiwtchStreamers.length,
-    };
   }
 }

@@ -1,9 +1,11 @@
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from '@shared/entities';
+import entities, { TwitchEntity, UserEntity } from '@shared/entities';
+import { HttpModule } from '@shared/http/http.module';
+import { Agent } from 'https';
 import { TasksModule } from './tasks/tasks.module';
 import { TwitchController } from './twitch.controller';
 import { TwitchService } from './twitch.service';
@@ -39,8 +41,15 @@ import { TwitchService } from './twitch.service';
       inject: [ConfigService],
     }),
     TasksModule,
+    HttpModule.register({
+      timeout: 10000,
+      httpsAgent: new Agent({
+        rejectUnauthorized: false,
+      }),
+    }),
+    TypeOrmModule.forFeature([UserEntity, TwitchEntity]),
   ],
-  controllers: [TwitchController],
-  providers: [TwitchService],
+  controllers: [TwitchController, Logger],
+  providers: [TwitchService, Logger],
 })
 export class TwitchModule {}

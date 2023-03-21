@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { V1Module } from './v1/v1.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { ScheduleModule } from '@nestjs/schedule';
-import { HttpModule } from './http/http.module';
+import { HttpModule } from '@shared/http/http.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Agent } from 'https';
 import entities from '@shared/entities';

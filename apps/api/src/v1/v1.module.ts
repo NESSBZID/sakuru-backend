@@ -4,7 +4,7 @@ import { V1Controller } from './v1.controller';
 import { AuthModuleV1 } from './auth/auth.module';
 import { UsersModuleV1 } from './users/users.module';
 import { TwitchModuleV1 } from './twitch/twitch.module';
-import { HttpModule } from 'apps/api/src/http/http.module';
+import { HttpModule } from '@shared/http/http.module';
 import { StatisticsModuleV1 } from './statistics/statistics.module';
 
 @Module({
