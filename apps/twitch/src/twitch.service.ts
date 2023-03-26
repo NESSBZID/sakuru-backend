@@ -1,5 +1,4 @@
 import TwitchApi from '@alowave223/node-twitch';
-import { Stream } from '@alowave223/node-twitch/dist/types/objects';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import {
   BadRequestException,

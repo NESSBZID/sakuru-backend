@@ -6,15 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     TwitchModule,
     {
-      transport: Transport.KAFKA,
+      transport: Transport.TCP,
       options: {
-        client: {
-          clientId: 'twitch',
-          brokers: ['localhost:9092'],
-        },
-        consumer: {
-          groupId: 'twitch-consumer',
-        },
+        host: 'localhost',
+        port: 8877,
       },
     },
   );

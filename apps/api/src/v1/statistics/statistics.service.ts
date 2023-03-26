@@ -1,66 +1,66 @@
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { CustomClientTCP } from '@shared/tcp-client/customClient';
+import { catchError, firstValueFrom, take } from 'rxjs';
 import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import Redis from 'ioredis';
-import { MapEntity, UserEntity } from '@shared/entities';
-import { checkValidModsCombination } from 'apps/api/src/utils';
-import { Repository } from 'typeorm';
-import {
-  ServerTopScoresInput,
-  ServerTopScoresOutput,
-} from '../dto/serverTopScores.dto';
+  IServerRecordsOutput,
+  ServerRecordsDto,
+} from '../dto/serverRecords.dto';
 import { IServerStats } from '../interfaces/serverStats.interface';
 
 @Injectable()
 export class StatisticsServiceV1 {
+  public readonly logger = new Logger(StatisticsServiceV1.name);
+
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(MapEntity)
-    private readonly mapRepository: Repository<MapEntity>,
-    @InjectRedis() private readonly redis: Redis,
+    @Inject('STATISTICS_SERVICE') private statisticsService: CustomClientTCP,
   ) {}
 
-  async getServerTopScores({
-    mode,
-    mods,
-  }: ServerTopScoresInput): Promise<ServerTopScoresOutput> {
-    if (!checkValidModsCombination(mode, mods))
-      throw new BadRequestException('Invalid mods combination.');
+  async onModuleInit() {
+    await this.statisticsService.connect();
+  }
 
-    const topScoreRaw = await this.redis.get(
-      `sakuru:cache:top:${mods}:${mode}`,
-    );
+  async getServerRecords({
+    mode: modes,
+  }: ServerRecordsDto): Promise<IServerRecordsOutput[]> {
+    const response: IServerRecordsOutput[] = [];
 
-    if (!topScoreRaw)
-      throw new NotFoundException(
-        'No top scores found for this mod combination.',
-      );
+    for (const mode of modes) {
+      const observable = this.statisticsService
+        .send('statistics.server_records.get', mode)
+        .pipe(
+          take(1),
+          catchError((err, caught) => {
+            this.logger.error(err?.message, err?.stack);
+            return caught;
+          }),
+        );
 
-    return JSON.parse(topScoreRaw);
+      const data = await firstValueFrom(observable).catch((_) => {
+        return;
+      });
+
+      if (!data) continue;
+      response.push(data);
+    }
+
+    return response;
   }
 
   async getServerStats(): Promise<IServerStats> {
-    const playersTotal = await this.userRepository.count();
-    const playersOnline = await this.redis.llen('sakuru:online_players');
-    const multiplayerMatches = await this.redis.llen(
-      'sakuru:multiplayer_matches',
-    );
-    const customRankedMapsCount = await this.mapRepository.count({
-      where: {
-        frozen: true,
-      },
+    const observable = this.statisticsService
+      .receive('statistics.server_stats.get')
+      .pipe(
+        take(1),
+        catchError((err, caught) => {
+          this.logger.error(err?.message, err?.stack);
+          return caught;
+        }),
+      );
+
+    const data = await firstValueFrom(observable).catch((_) => {
+      throw new NotFoundException('No data found.');
     });
 
-    return {
-      players_total: playersTotal,
-      players_online: playersOnline,
-      multiplayer_matches: multiplayerMatches,
-      custom_ranked_maps_count: customRankedMapsCount,
-    };
+    return data as IServerStats;
   }
 }

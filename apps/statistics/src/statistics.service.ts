@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { globalState } from './global.state';
+import { IServerRecords } from './interfaces/serverRecords.interface';
 import { IServerStats } from './interfaces/serverStats.interface';
 
 @Injectable()
 export class StatisticsService {
-  async getServerStats(): Promise<IServerStats> {
-    return <IServerStats>'Hello World!';
+  getServerRecords(mode: string): IServerRecords {
+    return globalState.serverRecords[mode];
+  }
+
+  getServerStats(): IServerStats {
+    console.log(globalState.serverStats);
+    return globalState.serverStats;
   }
 }
