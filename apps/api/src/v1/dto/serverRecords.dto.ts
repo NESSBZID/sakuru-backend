@@ -11,12 +11,14 @@ export class ServerRecordsDto {
   mode: number[];
 }
 
-export interface IServerRecordsOutput {
-  name: string;
-  pp_val: number;
-  mode: number;
-  user_id: number;
-  play_time: Date;
-  bmap_id: number;
+export type ServerRecord = {
+  username: string;
+  pp: number;
+  userid: number;
+  beatmap_id: number;
   set_id: number;
-}
+};
+
+export type IServerRecordsOutput = {
+  [key in GameModes]?: ServerRecord;
+};

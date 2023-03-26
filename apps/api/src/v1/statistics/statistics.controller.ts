@@ -15,7 +15,7 @@ export class StatisticsControllerV1 {
   @Get('server_records')
   async getServerRecords(
     @Query() query: ServerRecordsDto,
-  ): Promise<IServerRecordsOutput[]> {
+  ): Promise<IServerRecordsOutput> {
     return this.statisticsService.getServerRecords(query);
   }
 

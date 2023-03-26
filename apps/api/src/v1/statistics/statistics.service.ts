@@ -3,6 +3,7 @@ import { CustomClientTCP } from '@shared/tcp-client/customClient';
 import { catchError, firstValueFrom, take } from 'rxjs';
 import {
   IServerRecordsOutput,
+  ServerRecord,
   ServerRecordsDto,
 } from '../dto/serverRecords.dto';
 import { IServerStats } from '../interfaces/serverStats.interface';
@@ -21,8 +22,8 @@ export class StatisticsServiceV1 {
 
   async getServerRecords({
     mode: modes,
-  }: ServerRecordsDto): Promise<IServerRecordsOutput[]> {
-    const response: IServerRecordsOutput[] = [];
+  }: ServerRecordsDto): Promise<IServerRecordsOutput> {
+    const response: IServerRecordsOutput = {};
 
     for (const mode of modes) {
       const observable = this.statisticsService
@@ -40,7 +41,7 @@ export class StatisticsServiceV1 {
       });
 
       if (!data) continue;
-      response.push(data);
+      response[mode] = data as ServerRecord;
     }
 
     return response;
