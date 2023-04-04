@@ -10,7 +10,6 @@ export class StatisticsService {
   }
 
   getServerStats(): IServerStats {
-    console.log(globalState.serverStats);
     return globalState.serverStats;
   }
 }

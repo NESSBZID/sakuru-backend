@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Controller,
-  Get,
   Post,
   Req,
   Res,
@@ -43,12 +42,6 @@ export class AuthControllerV1 {
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 31),
     });
 
-    return <UserEntity>reqest.user;
-  }
-
-  @Get('gowno')
-  @UseGuards(AuthGuard('jwt'))
-  async gowno(@Req() reqest: Request): Promise<UserEntity> {
     return <UserEntity>reqest.user;
   }
 }

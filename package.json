@@ -40,8 +40,8 @@
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.12",
-    "typeorm-model-generator": "^0.4.6"
+    "sharp": "^0.32.0",
+    "typeorm": "^0.3.12"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -56,6 +56,7 @@
     "@types/node": "18.11.18",
     "@types/passport-jwt": "^3.0.8",
     "@types/supertest": "^2.0.11",
+    "@types/sharp": "^0.31.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",
