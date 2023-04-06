@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '@shared/entities';
 import { Repository } from 'typeorm';
-import { UserSearchDto } from '../dto/userSearch.dto';
+import { UsersSearchDto } from '../dto/usersSearch.dto';
 
 @Injectable()
 export class UsersServiceV1 {
@@ -35,17 +35,17 @@ export class UsersServiceV1 {
     });
   }
 
-  async searchUser(userSearchDto: UserSearchDto): Promise<UserEntity[]> {
+  async searchUsers(usersSearchDto: UsersSearchDto): Promise<UserEntity[]> {
     const searchResult = await this.userRepository
       .createQueryBuilder('user')
       .where('user.name LIKE :name', {
-        name: `%${userSearchDto.query}%`,
+        name: `%${usersSearchDto.query}%`,
       })
       .orWhere('user.safe_name LIKE :safe_name', {
-        safe_name: `%${userSearchDto.query}%`,
+        safe_name: `%${usersSearchDto.query}%`,
       })
-      .limit(userSearchDto.limit)
-      .offset(userSearchDto.offset)
+      .limit(usersSearchDto.limit)
+      .offset(usersSearchDto.offset)
       .getMany();
 
     return searchResult;
