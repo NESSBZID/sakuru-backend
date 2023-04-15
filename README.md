@@ -1,3 +1,9 @@
+<p align="center">
+    <a href="https://www.codefactor.io/repository/github/osu-sakuru/sakuru-backend">
+        <img src="https://www.codefactor.io/repository/github/osu-sakuru/sakuru-backend/badge" alt="CodeFactor" />
+    </a>
+</p>
+
 # Sakuru-BackEnd
 
 I will **NOT** provide any help nor advices how to use this on your project, I made this repo public because I feel like some people might use structure, or general idea of my project for their own projects.
