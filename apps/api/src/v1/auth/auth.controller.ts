@@ -10,6 +10,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { UserEntity } from '@shared/entities';
 import { AuthServiceV1 } from './auth.service';
+import { RecaptchaGuard } from '@shared/guards/recaptcha.guard';
 
 @Controller({
   path: 'auth',
@@ -19,6 +20,7 @@ export class AuthControllerV1 {
   constructor(private authService: AuthServiceV1) {}
 
   @Post('login')
+  @UseGuards(RecaptchaGuard)
   @UseGuards(AuthGuard('local'))
   async login(
     @Req() reqest: Request,

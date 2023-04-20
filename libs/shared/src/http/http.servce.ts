@@ -35,7 +35,7 @@ export class HttpService {
 
   post<T = any>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<T>> {
     return this.instance.post<T>(url, data, config);
@@ -43,7 +43,7 @@ export class HttpService {
 
   put<T = any>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<T>> {
     return this.instance.put<T>(url, data, config);
@@ -51,7 +51,7 @@ export class HttpService {
 
   patch<T = any>(
     url: string,
-    data?: any,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ): Promise<AxiosResponse<T>> {
     return this.instance.patch<T>(url, data, config);

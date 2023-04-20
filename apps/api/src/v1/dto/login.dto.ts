@@ -9,4 +9,8 @@ export default class LoginDto {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @IsNotEmpty()
+  @IsString()
+  captcha_token: string;
 }
