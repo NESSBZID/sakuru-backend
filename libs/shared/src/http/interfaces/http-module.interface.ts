@@ -12,8 +12,8 @@ export interface HttpModuleAsyncOptions
   useExisting?: Type<HttpModuleOptionsFactory>;
   useClass?: Type<HttpModuleOptionsFactory>;
   useFactory?: (
-    ...args: unknown[]
+    ...args: any[]
   ) => Promise<HttpModuleOptions> | HttpModuleOptions;
-  inject?: unknown[];
+  inject?: any[];
   extraProviders?: Provider[];
 }

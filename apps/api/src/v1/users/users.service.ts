@@ -15,6 +15,14 @@ export class UsersServiceV1 {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
+  async userExists(clause: string): Promise<boolean> {
+    const isExists = await this.userRepository.exist({
+      where: [{ safe_name: clause }, { email: clause }, { name: clause }],
+    });
+
+    return isExists;
+  }
+
   async findUser(clause: string): Promise<UserEntity> | null {
     return await this.userRepository.findOne({
       where: [{ safe_name: clause }, { email: clause }, { name: clause }],
@@ -40,9 +48,9 @@ export class UsersServiceV1 {
   }
 
   async creteUser(userCreateDto: UserCreateDto): Promise<UserEntity> {
-    if (await this.findUser(userCreateDto.username)) {
+    if (await this.userExists(userCreateDto.username)) {
       throw new ConflictException('register.validation.username.exists');
-    } else if (await this.findUser(userCreateDto.email)) {
+    } else if (await this.userExists(userCreateDto.email)) {
       throw new ConflictException('register.validation.email.exists');
     }
 

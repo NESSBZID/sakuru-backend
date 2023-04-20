@@ -12,7 +12,10 @@ export class AuthServiceV1 {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(credential: string, password: string): Promise<any> {
+  async validateUser(
+    credential: string,
+    password: string,
+  ): Promise<UserEntity | null> {
     const user = await this.usersService.findUser(credential);
     if (!user) throw new NotFoundException('Could not find the user.');
 
