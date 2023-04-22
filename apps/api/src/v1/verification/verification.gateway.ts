@@ -7,10 +7,10 @@ import {
 import { Socket } from 'socket.io';
 import { VerificationServiceV1 } from './verification.service';
 
-@WebSocketGateway({
+@WebSocketGateway(3727, {
   namespace: 'verification',
   cors: {
-    origin: 'http://localhost:5173',
+    origin: /^(https|http)?:\/\/(localhost|sakuru\.cc|dev\.lol)(:\d{1,5})?$/i,
   },
 })
 export class VerificationGatewayV1 {
