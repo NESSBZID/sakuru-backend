@@ -33,7 +33,7 @@
     }
   },
   "compilerOptions": {
-    "deleteOutDir": true,
+    "deleteOutDir": false,
     "tsConfigPath": "apps/api/tsconfig.app.json"
   },
   "projects": {

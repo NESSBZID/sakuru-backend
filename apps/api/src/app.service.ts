@@ -8,7 +8,7 @@ import { globalState } from './global.state';
 export class AppService {
   private readonly logger: Logger = new Logger(AppService.name);
 
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(@InjectRedis('subscriber') private readonly redis: Redis) {}
 
   async onApplicationBootstrap(): Promise<void> {
     this.logger.log('Subscribing to Verification channel...');

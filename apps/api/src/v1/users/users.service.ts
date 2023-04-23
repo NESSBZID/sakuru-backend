@@ -7,12 +7,17 @@ import { hash as bcryptHash } from 'bcrypt';
 import UserCreateDto from '../dto/userCreate.dto';
 import * as md5 from 'md5';
 import { makeSafeName } from '@shared/shared.utils';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Redis } from 'ioredis';
+import { GameModes } from '@shared/enums/GameModes.enum';
 
 @Injectable()
 export class UsersServiceV1 {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRedis()
+    private readonly redisClient: Redis,
   ) {}
 
   async userExists(clause: string): Promise<boolean> {
@@ -57,14 +62,28 @@ export class UsersServiceV1 {
     const password_md5 = md5(userCreateDto.password);
     const password_hash = await bcryptHash(password_md5, 12);
 
-    const user = this.userRepository.create({
+    const user = await this.userRepository.save({
       name: userCreateDto.username,
       safe_name: makeSafeName(userCreateDto.username),
       email: userCreateDto.email,
       pw_bcrypt: password_hash,
     });
 
-    return await this.userRepository.save(user);
+    for (const mode in GameModes) {
+      if (!isNaN(Number(mode))) continue;
+
+      // Add user to global leaderboard
+      this.redisClient.zadd(`sakuru:leaderboard:${mode}`, 0, user.id);
+
+      // Add user to country leaderboard
+      this.redisClient.zadd(
+        `sakuru:leaderboard:${mode}:${user.country}`,
+        0,
+        user.id,
+      );
+    }
+
+    return user;
   }
 
   async searchUsers(usersSearchDto: UsersSearchDto): Promise<UserEntity[]> {

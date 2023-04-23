@@ -1,12 +1,12 @@
 export enum GameModes {
-  'VANILLA_OSU' = 0,
-  'VANILLA_TAIKO' = 1,
-  'VANILLA_CATCH' = 2,
-  'VANILLA_MANIA' = 3,
+  'vn!std' = 0,
+  'vn!taiko' = 1,
+  'vn!catch' = 2,
+  'vn!mania' = 3,
 
-  'RELAX_OSU' = 4,
-  'RELAX_TAIKO' = 5,
-  'RELAX_CATCH' = 6,
+  'rx!std' = 4,
+  'rx!taiko' = 5,
+  'rx!catch' = 6,
 
-  'AUTOPILOT_OSU' = 8,
+  'ap!std' = 8,
 }

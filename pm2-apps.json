@@ -1,0 +1,24 @@
+{
+  "apps": [
+    {
+      "name": "sakuru_backend-statistics",
+      "script": "node ./dist/apps/statistics/src/main.js",
+      "node_args": "--max_old_space_size=4096"
+    },
+    {
+      "name": "sakuru_backend-twitch",
+      "script": "node ./dist/apps/twitch/src/main.js",
+      "node_args": "--max_old_space_size=4096"
+    },
+    {
+      "name": "sakuru_backend-avatars",
+      "script": "node ./dist/apps/avatars/src/main.js",
+      "node_args": "--max_old_space_size=4096"
+    },
+    {
+      "name": "sakuru_backend-api",
+      "script": "node ./dist/apps/api/src/main.js",
+      "node_args": "--max_old_space_size=4096"
+    }
+  ]
+}

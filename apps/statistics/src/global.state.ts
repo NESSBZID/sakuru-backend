@@ -4,14 +4,14 @@ import { IServerStats } from './interfaces/serverStats.interface';
 
 class Global {
   public static serverRecords: IServerRecords = {
-    [GameModes.VANILLA_OSU]: undefined,
-    [GameModes.VANILLA_TAIKO]: undefined,
-    [GameModes.VANILLA_CATCH]: undefined,
-    [GameModes.VANILLA_MANIA]: undefined,
-    [GameModes.RELAX_OSU]: undefined,
-    [GameModes.RELAX_TAIKO]: undefined,
-    [GameModes.RELAX_CATCH]: undefined,
-    [GameModes.AUTOPILOT_OSU]: undefined,
+    [GameModes['vn!std']]: undefined,
+    [GameModes['vn!taiko']]: undefined,
+    [GameModes['vn!catch']]: undefined,
+    [GameModes['vn!mania']]: undefined,
+    [GameModes['rx!std']]: undefined,
+    [GameModes['rx!taiko']]: undefined,
+    [GameModes['rx!catch']]: undefined,
+    [GameModes['ap!std']]: undefined,
   };
 
   public static serverStats: IServerStats = {

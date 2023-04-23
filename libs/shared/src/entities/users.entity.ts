@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Index('users_api_key_uindex', ['api_key'], { unique: true })
@@ -28,6 +28,7 @@ export class Users {
   pw_bcrypt: string;
 
   @Column('char', { name: 'country', length: 2, default: 'xx' })
+  @Transform(({ value }) => value.tolowerCase())
   country: string;
 
   @Column('int', { name: 'silence_end', default: 0 })

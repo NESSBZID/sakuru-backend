@@ -23,9 +23,21 @@ import entities from '@shared/entities';
     RedisModule.forRootAsync(
       {
         useFactory: (configService: ConfigService) => ({
-          config: {
-            url: configService.get('REDIS_URL'),
-          },
+          closeClient: true,
+          config: [
+            {
+              url: configService.get('REDIS_URL'),
+              connectionName: 'default',
+              namespace: 'default',
+              enableAutoPipelining: true,
+            },
+            {
+              url: configService.get('REDIS_URL'),
+              connectionName: 'subscriber',
+              namespace: 'subscriber',
+              enableAutoPipelining: true,
+            },
+          ],
         }),
         inject: [ConfigService],
       },
