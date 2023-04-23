@@ -7,12 +7,7 @@ import {
 import { Socket } from 'socket.io';
 import { VerificationServiceV1 } from './verification.service';
 
-@WebSocketGateway(3727, {
-  namespace: 'verification',
-  cors: {
-    origin: /^(https|http)?:\/\/(localhost|sakuru\.cc|dev\.lol)(:\d{1,5})?$/i,
-  },
-})
+@WebSocketGateway(3727)
 export class VerificationGatewayV1 {
   constructor(private readonly verificationService: VerificationServiceV1) {}
 
