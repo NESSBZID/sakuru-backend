@@ -28,7 +28,7 @@ export class Users {
   pw_bcrypt: string;
 
   @Column('char', { name: 'country', length: 2, default: 'xx' })
-  @Transform(({ value }) => value.tolowerCase())
+  @Transform(({ value }) => value.toLowerCase())
   country: string;
 
   @Column('int', { name: 'silence_end', default: 0 })

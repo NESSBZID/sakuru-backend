@@ -25,7 +25,7 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
           source: '.'
-          target: '/home/uahub/sakuru-backend'
+          target: '/home/${{ secrets.USERNAME }}/sakuru-backend'
 
       - name: Building the project
         uses: appleboy/ssh-action@master
@@ -37,7 +37,7 @@ jobs:
           script: |
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
-            cd /home/uahub/sakuru-backend
+            cd /home/${{ secrets.USERNAME }}/sakuru-backend
             yarn install
             yarn build-all
             cp .env ./dist/.env
