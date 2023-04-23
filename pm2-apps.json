@@ -3,21 +3,29 @@
     {
       "name": "sakuru_backend-statistics",
       "script": "node ./dist/apps/statistics/src/main.js",
+      "out_file": "/var/log/sakuru/backend_statistics.log",
+      "error_file": "/var/log/sakuru/backend_statistics-errors.log",
       "node_args": "--max_old_space_size=4096"
     },
     {
       "name": "sakuru_backend-twitch",
       "script": "node ./dist/apps/twitch/src/main.js",
+      "out_file": "/var/log/sakuru/backend_twitch.log",
+      "error_file": "/var/log/sakuru/backend_twitch-errors.log",
       "node_args": "--max_old_space_size=4096"
     },
     {
       "name": "sakuru_backend-avatars",
       "script": "node ./dist/apps/avatars/src/main.js",
+      "out_file": "/var/log/sakuru/backend_avatars.log",
+      "error_file": "/var/log/sakuru/backend_avatars-errors.log",
       "node_args": "--max_old_space_size=4096"
     },
     {
       "name": "sakuru_backend-api",
       "script": "node ./dist/apps/api/src/main.js",
+      "out_file": "/var/log/sakuru/backend_api.log",
+      "error_file": "/var/log/sakuru/backend_api-errors.log",
       "node_args": "--max_old_space_size=4096"
     }
   ]
