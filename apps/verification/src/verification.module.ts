@@ -49,7 +49,6 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
     }),
     TypeOrmModule.forFeature([UserEntity]),
   ],
-  controllers: [VerificationGateway],
-  providers: [VerificationService],
+  providers: [VerificationService, VerificationGateway],
 })
 export class VerificationModule {}
