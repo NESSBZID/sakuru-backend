@@ -7,7 +7,7 @@ import {
 import { Socket } from 'socket.io';
 import { VerificationService } from './verification.service';
 
-@WebSocketGateway({
+@WebSocketGateway(3727, {
   cors: {
     origin: /^(https|http)?:\/\/(localhost|sakuru\.cc|dev\.lol)(:\d{1,5})?$/i,
   },
