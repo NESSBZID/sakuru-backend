@@ -98,7 +98,7 @@ export class TasksService {
         }
 
         // NOTE: Delete all history records if they older than 90 days
-        await this.userProfileHistoryRepository.save(toUpdate);
+        await this.userProfileHistoryRepository.insert(toUpdate);
       }
     }
 
