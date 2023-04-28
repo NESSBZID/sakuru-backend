@@ -5,15 +5,9 @@ import { AuthModuleV1 } from './auth/auth.module';
 import { UsersModuleV1 } from './users/users.module';
 import { HttpModule } from '@shared/http/http.module';
 import { StatisticsModuleV1 } from './statistics/statistics.module';
-import { VerificationModuleV1 } from './verification/verification.module';
 
 @Module({
-  imports: [
-    AuthModuleV1,
-    UsersModuleV1,
-    StatisticsModuleV1,
-    VerificationModuleV1,
-  ],
+  imports: [AuthModuleV1, UsersModuleV1, StatisticsModuleV1],
   providers: [V1Service, Logger, HttpModule],
   controllers: [V1Controller],
 })

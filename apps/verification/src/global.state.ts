@@ -1,4 +1,4 @@
-import { Subscription } from './v1/interfaces/verificationGateway.interface';
+import { Subscription } from '@shared/interfaces/verificationGateway.interface';
 
 class Global {
   public static readonly verificationQueue: Subscription[] = [];

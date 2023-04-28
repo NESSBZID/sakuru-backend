@@ -31,6 +31,16 @@
       "node_args": "--max_old_space_size=4096"
     },
     {
+      "name": "sakuru_backend-verification",
+      "script": "node ./dist/apps/verification/src/main.js",
+      "out_file": "/var/log/sakuru/backend_verification.log",
+      "error_file": "/var/log/sakuru/backend_verification-errors.log",
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "node_args": "--max_old_space_size=4096"
+    },
+    {
       "name": "sakuru_backend-api",
       "script": "node ./dist/apps/api/src/main.js",
       "out_file": "/var/log/sakuru/backend_api.log",

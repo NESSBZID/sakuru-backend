@@ -1,22 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersServiceV1 } from '../users/users.service';
 import { compare as bcryptCompare } from 'bcrypt';
 import { UserEntity } from '@shared/entities';
 import * as md5 from 'md5';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthServiceV1 {
   constructor(
-    private readonly usersService: UsersServiceV1,
     private jwtService: JwtService,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
   async validateUser(
     credential: string,
     password: string,
   ): Promise<UserEntity | null> {
-    const user = await this.usersService.findUser(credential);
+    const user = await this.usersRepository.findOne({
+      where: [
+        { safe_name: credential as string },
+        { email: credential as string },
+        { name: credential as string },
+      ],
+    });
     if (!user) throw new NotFoundException('Could not find the user.');
 
     const passwordValid = await bcryptCompare(md5(password), user.pw_bcrypt);

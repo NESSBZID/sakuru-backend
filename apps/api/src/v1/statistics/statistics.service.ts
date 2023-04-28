@@ -6,7 +6,7 @@ import {
   ServerRecord,
   ServerRecordsDto,
 } from '../dto/serverRecords.dto';
-import { IServerStats } from '../interfaces/serverStats.interface';
+import IServerStats from '@shared/interfaces/responses/serverStats.interface';
 
 @Injectable()
 export class StatisticsServiceV1 {

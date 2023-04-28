@@ -1,6 +1,6 @@
 import { GameModes } from '@shared/enums/GameModes.enum';
-import { IServerRecords } from './interfaces/serverRecords.interface';
-import { IServerStats } from './interfaces/serverStats.interface';
+import { IServerRecords } from '../../../libs/shared/src/interfaces/responses/serverRecords.interface';
+import IServerStats from '@shared/interfaces/responses/serverStats.interface';
 
 class Global {
   public static serverRecords: IServerRecords = {

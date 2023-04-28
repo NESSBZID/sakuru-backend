@@ -5,15 +5,15 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { VerificationServiceV1 } from './verification.service';
+import { VerificationService } from './verification.service';
 
-@WebSocketGateway(3727, {
+@WebSocketGateway({
   cors: {
     origin: /^(https|http)?:\/\/(localhost|sakuru\.cc|dev\.lol)(:\d{1,5})?$/i,
   },
 })
-export class VerificationGatewayV1 {
-  constructor(private readonly verificationService: VerificationServiceV1) {}
+export class VerificationGateway {
+  constructor(private readonly verificationService: VerificationService) {}
 
   @SubscribeMessage('verify')
   async listenForMessages(

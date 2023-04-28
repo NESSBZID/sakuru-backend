@@ -1,6 +1,5 @@
 import { ClassSerializerInterceptor, Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { V1Module } from './v1/v1.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
@@ -66,7 +65,6 @@ import entities from '@shared/entities';
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
     },
-    AppService,
     Logger,
   ],
   exports: [Logger, HttpModule],

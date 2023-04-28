@@ -20,6 +20,7 @@ import { TourneyPoolMaps } from './tourneyPoolMaps.entity';
 import { TourneyPools } from './tourneyPools.entity';
 import { Twitch } from './twitch.entity';
 import { UserAchievements } from './userAchievements.entity';
+import { UserProfileHistory } from './userProfileHistory.entity';
 import { Users } from './users.entity';
 
 const entities = [
@@ -46,6 +47,7 @@ const entities = [
   Channels,
   Achievements,
   Twitch,
+  UserProfileHistory,
 ];
 
 export {
@@ -72,5 +74,6 @@ export {
   Channels as ChannelEntity,
   Achievements as AchievementEntity,
   Twitch as TwitchEntity,
+  UserProfileHistory as UserProfileHistoryEntity,
 };
 export default entities;

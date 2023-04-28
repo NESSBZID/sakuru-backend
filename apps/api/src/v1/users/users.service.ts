@@ -1,4 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '@shared/entities';
 import { Repository } from 'typeorm';
@@ -10,19 +16,35 @@ import { makeSafeName } from '@shared/shared.utils';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { GameModes } from '@shared/enums/GameModes.enum';
+import { CustomClientTCP } from '@shared/tcp-client/customClient';
+import { catchError, firstValueFrom, take } from 'rxjs';
+import { IUsersGraphsMessage } from '@shared/interfaces/messages/statistics.interface';
+import IUserGraphsResponse from '@shared/interfaces/responses/userGraphs.interface';
 
 @Injectable()
 export class UsersServiceV1 {
+  public readonly logger = new Logger(UsersServiceV1.name);
+
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectRedis()
     private readonly redisClient: Redis,
+    @Inject('GRAPHS_SERVICE') private graphsService: CustomClientTCP,
   ) {}
 
-  async userExists(clause: string): Promise<boolean> {
+  async onModuleInit() {
+    await this.graphsService.connect();
+  }
+
+  async userExists(clause: string | number): Promise<boolean> {
     const isExists = await this.userRepository.exist({
-      where: [{ safe_name: clause }, { email: clause }, { name: clause }],
+      where: [
+        { id: clause as number },
+        { safe_name: clause as string },
+        { email: clause as string },
+        { name: clause as string },
+      ],
     });
 
     return isExists;
@@ -100,5 +122,36 @@ export class UsersServiceV1 {
       .getMany();
 
     return searchResult;
+  }
+
+  async getUsersGraphs(
+    userId: number,
+    mode: GameModes,
+  ): Promise<IUserGraphsResponse> {
+    if (!(await this.userExists(userId)))
+      throw new NotFoundException('User not found.');
+
+    const observable = this.graphsService
+      .send<IUserGraphsResponse, IUsersGraphsMessage>(
+        'statistics.users_graphs.get',
+        {
+          user_id: userId,
+          mode: mode,
+        },
+      )
+      .pipe(
+        take(1),
+        catchError((err: string, _) => {
+          throw new NotFoundException(err);
+        }),
+      );
+
+    const data = await firstValueFrom(observable).catch((_) => {
+      return;
+    });
+
+    if (!data) throw new NotFoundException("User's graphs not found.");
+
+    return data;
   }
 }

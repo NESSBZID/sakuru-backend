@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from '@shared/entities';
+import entities, { UserProfileHistoryEntity } from '@shared/entities';
 import { StatisticsController } from './statistics.controller';
 import { StatisticsService } from './statistics.service';
 import { TasksModule } from './tasks/tasks.module';
@@ -38,6 +38,7 @@ import { TasksModule } from './tasks/tasks.module';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([UserProfileHistoryEntity]),
     TasksModule,
   ],
   controllers: [StatisticsController],

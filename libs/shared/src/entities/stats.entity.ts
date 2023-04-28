@@ -6,7 +6,7 @@ export class Stats {
   id: number;
 
   @Column('tinyint', { primary: true, name: 'mode', width: 1 })
-  mode: boolean;
+  mode: number;
 
   @Column('bigint', { name: 'tscore', unsigned: true, default: 0 })
   tscore: string;
