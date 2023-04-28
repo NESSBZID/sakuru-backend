@@ -57,6 +57,7 @@ export class TasksService {
         if (isNaN(Number(mode))) continue;
 
         const toUpdate = {
+          user_id: user.id,
           pp: null,
           rank: null,
           country_rank: null,
