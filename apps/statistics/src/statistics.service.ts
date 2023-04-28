@@ -33,7 +33,7 @@ export class StatisticsService {
       userId,
     );
 
-    if (!rank) {
+    if (rank === null) {
       return 0;
     } else {
       return rank + 1;
@@ -50,7 +50,7 @@ export class StatisticsService {
       userId,
     );
 
-    if (!rank) {
+    if (rank === null) {
       return 0;
     } else {
       return rank + 1;
