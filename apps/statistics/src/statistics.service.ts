@@ -64,7 +64,7 @@ export class StatisticsService {
     const userData = await this.userProfileHistroyRepository.find({
       select: ['pp', 'rank', 'country_rank', 'captured_at'],
       where: {
-        user_id: user_id,
+        id: user_id,
         mode: mode,
       },
     });

@@ -42,7 +42,7 @@ export class TasksService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async crawlUsersProfileGraphs(): Promise<void> {
+  async crawlUsersProfileGraphs(): Promise<any> {
     this.logger.log('Crawling users graphs...');
 
     const users = await this.userRepository.find({
@@ -57,7 +57,7 @@ export class TasksService {
         if (isNaN(Number(mode))) continue;
 
         const toUpdate = {
-          user_id: user.id,
+          id: user.id,
           mode: Number(mode),
           pp: null,
           rank: null,
@@ -86,7 +86,7 @@ export class TasksService {
         } else {
           const currentProfile =
             await this.userProfileHistoryRepository.findOneBy({
-              user_id: user.id,
+              id: user.id,
               mode: Number(mode),
             });
 

@@ -1,22 +1,20 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('user_profile_history', { schema: 'osu' })
 export class UserProfileHistory {
-  @Column({
+  @PrimaryColumn({
     type: 'int',
-    name: 'user_id',
+    name: 'id',
     width: 10,
     nullable: false,
-    primary: true,
   })
-  user_id: number;
+  id: number;
 
   @Column({
     type: 'int',
     name: 'mode',
     width: 1,
     nullable: false,
-    primary: true,
   })
   mode: number;
 
@@ -24,7 +22,6 @@ export class UserProfileHistory {
     type: 'datetime',
     name: 'captured_at',
     default: () => 'CURRENT_TIMESTAMP',
-    primary: true,
   })
   captured_at: Date;
 

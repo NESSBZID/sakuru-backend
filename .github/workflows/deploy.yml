@@ -39,6 +39,7 @@ jobs:
             source ~/.nvm/nvm.sh
             cd /home/${{ secrets.USERNAME }}/sakuru-backend
             yarn install
+            rm -rf ./dist
             yarn build-all
             cp .env ./dist/.env
             pm2 restart pm2-apps.json
