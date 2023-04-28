@@ -45,6 +45,8 @@ export class TasksService {
   async crawlUsersProfileGraphs(): Promise<any> {
     this.logger.log('Crawling users graphs...');
 
+    console.log(`sakuru:leaderboard:${GameModes[0]}`);
+
     const users = await this.userRepository.find({
       select: ['id', 'priv', 'country'],
       where: {
@@ -74,12 +76,12 @@ export class TasksService {
 
           toUpdate.pp = userStatistics.pp;
           toUpdate.rank = await this.statisticsService.getUserGlobalRank(
-            userStatistics.pp,
+            user.id,
             Number(mode),
           );
           toUpdate.country_rank =
             await this.statisticsService.getUserCountryRank(
-              userStatistics.pp,
+              user.id,
               Number(mode),
               user.country,
             );
