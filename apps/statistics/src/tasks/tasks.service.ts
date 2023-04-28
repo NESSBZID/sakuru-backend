@@ -58,6 +58,7 @@ export class TasksService {
 
         const toUpdate = {
           user_id: user.id,
+          mode: Number(mode),
           pp: null,
           rank: null,
           country_rank: null,
