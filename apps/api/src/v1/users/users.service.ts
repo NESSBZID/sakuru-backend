@@ -91,20 +91,6 @@ export class UsersServiceV1 {
       pw_bcrypt: password_hash,
     });
 
-    for (const mode in GameModes) {
-      if (!isNaN(Number(mode))) continue;
-
-      // Add user to global leaderboard
-      this.redisClient.zadd(`sakuru:leaderboard:${mode}`, 0, user.id);
-
-      // Add user to country leaderboard
-      this.redisClient.zadd(
-        `sakuru:leaderboard:${mode}:${user.country}`,
-        0,
-        user.id,
-      );
-    }
-
     return user;
   }
 

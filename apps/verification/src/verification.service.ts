@@ -7,6 +7,7 @@ import { globalState } from './global.state';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { RedisVerificationMessage } from '@shared/interfaces/verificationGateway.interface';
 import Redis from 'ioredis';
+import { GameModes } from '@shared/enums/GameModes.enum';
 
 @Injectable()
 export class VerificationService {
@@ -44,6 +45,26 @@ export class VerificationService {
       });
 
       subscription.socket.disconnect();
+
+      if (parsedMessage.status === 'success') {
+        const user = await this.userRepository.findOneBy({
+          id: parsedMessage.user,
+        });
+
+        for (const mode in GameModes) {
+          if (!isNaN(Number(mode))) continue;
+
+          // Add user to global leaderboard
+          this.redis.zadd(`sakuru:leaderboard:${mode}`, 0, user.id);
+
+          // Add user to country leaderboard
+          this.redis.zadd(
+            `sakuru:leaderboard:${mode}:${user.country}`,
+            0,
+            user.id,
+          );
+        }
+      }
     });
   }
 

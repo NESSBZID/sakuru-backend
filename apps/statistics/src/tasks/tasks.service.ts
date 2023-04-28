@@ -38,14 +38,11 @@ export class TasksService {
   async onApplicationBootstrap() {
     await this.updateServerRecords();
     await this.updateServerStats();
-    await this.crawlUsersProfileGraphs();
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async crawlUsersProfileGraphs(): Promise<any> {
     this.logger.log('Crawling users graphs...');
-
-    console.log(`sakuru:leaderboard:${GameModes[0]}`);
 
     const users = await this.userRepository.find({
       select: ['id', 'priv', 'country'],
