@@ -110,3 +110,49 @@ export function checkValidModsCombination(
       return false;
   }
 }
+
+function toFixed(num, fixed = undefined) {
+  const re = new RegExp('^-?\\d+(?:.\\d{0,' + (fixed || -1) + '})?');
+  return Number(num.toString().match(re)[0]);
+}
+
+export function getLevel(score) {
+  let i = 1;
+  for (;;) {
+    const lScore = getRequiredScoreForLevel(i);
+    if (score < lScore) {
+      return i - 1;
+    }
+    i++;
+  }
+}
+
+export function getRequiredScoreForLevel(level) {
+  if (level <= 100) {
+    if (level > 1) {
+      return Math.floor(
+        (5000 / 3) * (4 * Math.pow(level, 3) - 3 * Math.pow(level, 2) - level) +
+          Math.floor(1.25 * Math.pow(1.8, level - 60)),
+      );
+    }
+    return 1;
+  }
+
+  return 26931190829 + 100000000000 * (level - 100);
+}
+
+export function getLevelPrecise(score) {
+  if (score > 10000000000000000) return 0;
+
+  const baseLevel = getLevel(score);
+  const baseLevelScore = getRequiredScoreForLevel(baseLevel);
+  const scoreProgress = score - baseLevelScore;
+
+  const scoreLevelDifference =
+    getRequiredScoreForLevel(baseLevel + 1) - baseLevelScore;
+  const res = scoreProgress / scoreLevelDifference + baseLevel;
+
+  if (!isFinite(res)) return 0;
+
+  return toFixed(res);
+}

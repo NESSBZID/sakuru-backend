@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, Max, MaxLength, Min, MinLength } from 'class-validator';
 
-export class UsersSearchDto {
+export default class UsersSearchDto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(16)

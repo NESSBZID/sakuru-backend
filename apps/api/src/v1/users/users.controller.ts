@@ -10,12 +10,13 @@ import {
 import { UsersServiceV1 } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './users.decorator';
-import { UserEntity } from '@shared/entities';
-import { UsersSearchDto } from '../dto/usersSearch.dto';
-import UserCreateDto from '../dto/userCreate.dto';
+import { StatEntity, UserEntity } from '@shared/entities';
+import UsersSearch from '../dto/usersSearch.dto';
+import UserCreate from '../dto/userCreate.dto';
 import { RecaptchaGuard } from '@shared/guards/recaptcha.guard';
 import UserGraphsGet from '../dto/userGraphs.dto';
 import UserGraphsResponse from '@shared/interfaces/responses/userGraphs.interface';
+import UserStatsGet, { IUserStatsResponse } from '../dto/userStats.dto';
 
 @Controller({
   path: 'users',
@@ -26,7 +27,7 @@ export class UsersControllerV1 {
 
   @Post()
   @UseGuards(RecaptchaGuard)
-  async createUser(@Body() userCreateDto: UserCreateDto): Promise<UserEntity> {
+  async createUser(@Body() userCreateDto: UserCreate): Promise<UserEntity> {
     return await this.usersService.creteUser(userCreateDto);
   }
 
@@ -39,9 +40,22 @@ export class UsersControllerV1 {
   @Get('search')
   @UseGuards(AuthGuard('jwt'))
   async searchUsers(
-    @Query() usersSearchDto: UsersSearchDto,
+    @Query() usersSearchDto: UsersSearch,
   ): Promise<UserEntity[]> {
     return await this.usersService.searchUsers(usersSearchDto);
+  }
+
+  @Get('/:user')
+  async getUser(@Param('user') user: string): Promise<UserEntity> {
+    return await this.usersService.findUser(user);
+  }
+
+  @Get('/:id/stats')
+  async getUserStats(
+    @Param('id') userId: number,
+    @Query() { mode }: IUserStatsResponse,
+  ): Promise<StatEntity> {
+    return await this.usersService.getUserStats(userId, mode);
   }
 
   @Get('/:id/graphs')

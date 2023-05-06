@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { UsersServiceV1 } from './users.service';
 import { UsersControllerV1 } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from '@shared/entities';
+import { StatEntity, UserEntity } from '@shared/entities';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { CustomClientTCP } from '@shared/tcp-client/customClient';
 
@@ -19,7 +19,7 @@ import { CustomClientTCP } from '@shared/tcp-client/customClient';
         },
       },
     ]),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, StatEntity]),
   ],
   providers: [UsersServiceV1],
   controllers: [UsersControllerV1],
