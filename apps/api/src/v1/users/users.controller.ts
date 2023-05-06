@@ -50,19 +50,19 @@ export class UsersControllerV1 {
     return await this.usersService.findUser(user);
   }
 
-  @Get('/:id/stats')
+  @Get('/:user/stats')
   async getUserStats(
-    @Param('id') userId: number,
+    @Param('user') user: string,
     @Query() { mode }: UserStatsGet,
   ): Promise<StatEntity> {
-    return await this.usersService.getUserStats(userId, mode);
+    return await this.usersService.getUserStats(user, mode);
   }
 
-  @Get('/:id/graphs')
+  @Get('/:user/graphs')
   async getUserGraphs(
-    @Param('id') userId: number,
+    @Param('user') user: string,
     @Query() { mode }: UserGraphsGet,
   ): Promise<UserGraphsResponse> {
-    return await this.usersService.getUsersGraphs(userId, mode);
+    return await this.usersService.getUsersGraphs(user, mode);
   }
 }

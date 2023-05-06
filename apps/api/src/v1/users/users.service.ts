@@ -123,17 +123,17 @@ export class UsersServiceV1 {
   }
 
   async getUsersGraphs(
-    userId: number,
+    userClause: string,
     mode: GameModes,
   ): Promise<IUserGraphsResponse> {
-    if (!(await this.userExists(userId)))
-      throw new NotFoundException('User not found.');
+    const user = await this.findUser(userClause);
+    if (!userClause) throw new NotFoundException('User not found.');
 
     const observable = this.graphsService
       .send<IUserGraphsResponse, IUsersGraphsMessage>(
         'statistics.users_graphs.get',
         {
-          user_id: userId,
+          user: user.id,
           mode: mode,
         },
       )
@@ -155,14 +155,18 @@ export class UsersServiceV1 {
   }
 
   async getUserStats(
-    userId: number,
+    user: string | number,
     mode: GameModes,
   ): Promise<IUserStatsResponse> {
-    const { user_country: userCountry } = await this.userRepository
-      .createQueryBuilder('user')
-      .select('user.country')
-      .where('user.id = :id', { id: userId })
-      .getRawOne<{ user_country: string }>();
+    const { country: userCountry, id: userId } =
+      await this.userRepository.findOne({
+        select: ['country', 'id'],
+        where: [
+          { id: user as number },
+          { safe_name: user as string },
+          { name: user as string },
+        ],
+      });
 
     const userStats = await this.statRepository.findOneBy({
       id: userId,
