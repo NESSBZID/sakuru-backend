@@ -133,7 +133,7 @@ export class UsersServiceV1 {
       .send<IUserGraphsResponse, IUsersGraphsMessage>(
         'statistics.users_graphs.get',
         {
-          user: user.id,
+          userId: user.id,
           mode: mode,
         },
       )

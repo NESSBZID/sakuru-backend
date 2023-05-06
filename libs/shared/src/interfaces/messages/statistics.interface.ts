@@ -1,4 +1,4 @@
 export interface IUsersGraphsMessage {
-  user: number;
+  userId: number;
   mode: number;
 }

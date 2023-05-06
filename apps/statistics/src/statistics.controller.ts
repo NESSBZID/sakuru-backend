@@ -24,8 +24,8 @@ export class StatisticsController {
 
   @MessagePattern('statistics.users_graphs.get')
   async getUsersGraphs(
-    @Payload() { user_id, mode }: UsersGraphsGetMessageDto,
+    @Payload() { userId, mode }: UsersGraphsGetMessageDto,
   ): Promise<IUserGraphsResponse> {
-    return await this.appService.getUsersGraphs(user_id, mode);
+    return await this.appService.getUsersGraphs(userId, mode);
   }
 }

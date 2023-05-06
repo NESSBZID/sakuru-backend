@@ -58,14 +58,14 @@ export class StatisticsService {
   }
 
   async getUsersGraphs(
-    user_id: number,
+    userId: number,
     mode: GameModes,
   ): Promise<IUsersGraphsResponse> {
     const userData = await this.userProfileHistroyRepository.find({
       select: ['pp', 'rank', 'country_rank', 'captured_at'],
       where: {
-        user_id: user_id,
         mode: mode,
+        user_id: userId,
       },
       order: {
         captured_at: 'ASC',
