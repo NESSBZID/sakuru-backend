@@ -185,6 +185,8 @@ export class UsersServiceV1 {
     );
 
     const currentLevel = getLevelPrecise(userStats.tscore);
+    const nextLevelProgress = currentLevel.toString().split('.');
+
     return Object.assign(userStats, {
       global_rank: globalRank,
       country_rank: countryRank,
@@ -192,7 +194,7 @@ export class UsersServiceV1 {
       first_places: firstPlaces,
       level: {
         current: toFixedNoRound(getLevelPrecise(userStats.tscore)),
-        progress: currentLevel.toString().split('.')[1].slice(0, 2),
+        progress: nextLevelProgress[1] ? nextLevelProgress[1].slice(0, 2) : '0',
       },
     });
   }
