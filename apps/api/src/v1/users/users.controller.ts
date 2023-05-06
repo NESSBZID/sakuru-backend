@@ -16,7 +16,7 @@ import UserCreate from '../dto/userCreate.dto';
 import { RecaptchaGuard } from '@shared/guards/recaptcha.guard';
 import UserGraphsGet from '../dto/userGraphs.dto';
 import UserGraphsResponse from '@shared/interfaces/responses/userGraphs.interface';
-import UserStatsGet, { IUserStatsResponse } from '../dto/userStats.dto';
+import UserStatsGet from '../dto/userStats.dto';
 
 @Controller({
   path: 'users',
@@ -53,7 +53,7 @@ export class UsersControllerV1 {
   @Get('/:id/stats')
   async getUserStats(
     @Param('id') userId: number,
-    @Query() { mode }: IUserStatsResponse,
+    @Query() { mode }: UserStatsGet,
   ): Promise<StatEntity> {
     return await this.usersService.getUserStats(userId, mode);
   }
