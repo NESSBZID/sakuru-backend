@@ -145,10 +145,11 @@ export class UsersServiceV1 {
       );
 
     const data = await firstValueFrom(observable).catch((_) => {
-      return;
+      return {
+        mode: mode,
+        data: [],
+      };
     });
-
-    if (!data) throw new NotFoundException("User's graphs not found.");
 
     return data;
   }
