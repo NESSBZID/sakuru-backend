@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities, { UserEntity } from '@shared/entities';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { UserProfileHistory } from '@shared/entities/userProfileHistory.entity';
 
 @Module({
   imports: [
@@ -47,7 +48,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, UserProfileHistory]),
   ],
   providers: [VerificationService, VerificationGateway],
 })

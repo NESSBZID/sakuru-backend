@@ -8,6 +8,7 @@ import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { RedisVerificationMessage } from '@shared/interfaces/verificationGateway.interface';
 import Redis from 'ioredis';
 import { GameModes } from '@shared/enums/GameModes.enum';
+import { UserProfileHistory } from '@shared/entities/userProfileHistory.entity';
 
 @Injectable()
 export class VerificationService {
@@ -16,6 +17,8 @@ export class VerificationService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserProfileHistory)
+    private readonly userProfileHistoryRepository: Repository<UserProfileHistory>,
     @InjectRedis('subscriber') private readonly redis: Redis,
   ) {}
 
@@ -55,14 +58,25 @@ export class VerificationService {
           if (!isNaN(Number(mode))) continue;
 
           // Add user to global leaderboard
-          this.redis.zadd(`sakuru:leaderboard:${mode}`, 0, user.id);
-
+          const globalRank = await this.redis.zadd(
+            `sakuru:leaderboard:${mode}`,
+            0,
+            user.id,
+          );
           // Add user to country leaderboard
-          this.redis.zadd(
+          const countryRank = await this.redis.zadd(
             `sakuru:leaderboard:${mode}:${user.country}`,
             0,
             user.id,
           );
+
+          await this.userProfileHistoryRepository.insert({
+            user_id: user.id,
+            pp: 0,
+            mode: Number(mode),
+            rank: globalRank,
+            country_rank: countryRank,
+          });
         }
       }
     });
