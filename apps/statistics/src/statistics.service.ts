@@ -67,6 +67,9 @@ export class StatisticsService {
         user_id: user_id,
         mode: mode,
       },
+      order: {
+        captured_at: 'ASC',
+      },
     });
 
     if (userData.length === 0) throw new RpcException('UserData not found.');
