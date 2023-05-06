@@ -56,7 +56,7 @@ export class TasksService {
         if (isNaN(Number(mode))) continue;
 
         const toUpdate = {
-          id: user.id,
+          user_id: user.id,
           mode: Number(mode),
           pp: null,
           rank: null,
@@ -96,7 +96,6 @@ export class TasksService {
           toUpdate.country_rank = currentProfile.country_rank;
         }
 
-        // NOTE: Delete all history records if they older than 90 days
         await this.userProfileHistoryRepository.insert(toUpdate);
       }
     }

@@ -1,14 +1,17 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user_profile_history', { schema: 'osu' })
 export class UserProfileHistory {
-  @PrimaryColumn({
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
+  id: number;
+
+  @Column({
     type: 'int',
-    name: 'id',
+    name: 'user_id',
     width: 10,
     nullable: false,
   })
-  id: number;
+  user_id: number;
 
   @Column({
     type: 'int',
