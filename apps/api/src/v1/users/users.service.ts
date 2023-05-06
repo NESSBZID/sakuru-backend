@@ -182,10 +182,10 @@ export class UsersServiceV1 {
       userCountry,
     );
     const replayViews = await this.redisClient.llen(
-      `sakuru:replay_views:${GameModes[userId]}:${userId}`,
+      `sakuru:replay_views:${GameModes[mode]}:${userId}`,
     );
     const firstPlaces = await this.redisClient.llen(
-      `sakuru:firstplaces:${GameModes[userId]}:${userId}`,
+      `sakuru:firstplaces:${GameModes[mode]}:${userId}`,
     );
 
     const currentLevel = getLevelPrecise(userStats.tscore);
