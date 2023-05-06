@@ -14,8 +14,8 @@ import UserCreate from '../dto/userCreate.dto';
 import * as md5 from 'md5';
 import {
   getLevelPrecise,
-  getRequiredScoreForLevel,
   makeSafeName,
+  toFixedNoRound,
 } from '@shared/shared.utils';
 import { GameModes } from '@shared/enums/GameModes.enum';
 import { CustomClientTCP } from '@shared/tcp-client/customClient';
@@ -157,11 +157,11 @@ export class UsersServiceV1 {
     userId: number,
     mode: GameModes,
   ): Promise<IUserStatsResponse> {
-    const userCountry = await this.userRepository
+    const { user_country: userCountry } = await this.userRepository
       .createQueryBuilder('user')
       .select('user.country')
       .where('user.id = :id', { id: userId })
-      .getRawOne();
+      .getRawOne<{ user_country: string }>();
 
     const userStats = await this.statRepository.findOneBy({
       id: userId,
@@ -184,16 +184,14 @@ export class UsersServiceV1 {
     );
 
     const currentLevel = getLevelPrecise(userStats.tscore);
-    const nextLevelRequirement = getRequiredScoreForLevel(currentLevel + 1);
-
     return Object.assign(userStats, {
       global_rank: globalRank,
       country_rank: countryRank,
       replay_views: replayViews,
       first_places: firstPlaces,
       level: {
-        current: getLevelPrecise(userStats.tscore),
-        progress: (parseInt(userStats.tscore) / nextLevelRequirement) * 100,
+        current: toFixedNoRound(getLevelPrecise(userStats.tscore)),
+        progress: currentLevel.toString().split('.')[1].slice(0, 2),
       },
     });
   }

@@ -17,6 +17,6 @@ export type IUserStatsResponse = StatEntity & {
   first_places: number;
   level: {
     current: number;
-    progress: number;
+    progress: string;
   };
 };

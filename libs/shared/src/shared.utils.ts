@@ -111,7 +111,7 @@ export function checkValidModsCombination(
   }
 }
 
-function toFixed(num, fixed = undefined) {
+export function toFixedNoRound(num, fixed = undefined) {
   const re = new RegExp('^-?\\d+(?:.\\d{0,' + (fixed || -1) + '})?');
   return Number(num.toString().match(re)[0]);
 }
@@ -154,5 +154,5 @@ export function getLevelPrecise(score) {
 
   if (!isFinite(res)) return 0;
 
-  return toFixed(res);
+  return res;
 }
