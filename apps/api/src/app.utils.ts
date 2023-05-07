@@ -1,16 +1,13 @@
-export function toFixedNoRound(number: number, fixed = undefined): number {
-  const re = new RegExp('^-?\\d+(?:.\\d{0,' + (fixed || -1) + '})?');
-  return Number(number.toString().match(re)[0]);
-}
+import { appState } from './app.state';
 
-export function getLevel(preComputedScores: number[], score: number): number {
+export function getLevel(score: number): number {
   let left = 1;
-  let right = preComputedScores.length - 1;
+  let right = appState.preComputedScores.length - 1;
 
   while (left < right) {
     const mid = Math.floor((left + right) / 2);
 
-    if (preComputedScores[mid] <= score) {
+    if (appState.preComputedScores[mid] <= score) {
       left = mid + 1;
     } else {
       right = mid;
@@ -20,22 +17,18 @@ export function getLevel(preComputedScores: number[], score: number): number {
   return left - 1;
 }
 
-export function getLevelPrecise(
-  preComputedScores: number[],
-  memoizedScores: Record<number, number>,
-  score: number,
-): number {
+export function getLevelPrecise(score: number): number {
   if (score > 10000000000000000) return 0;
 
-  const baseLevel = getLevel(preComputedScores, score);
-  const baseLevelScore = preComputedScores[baseLevel];
+  const baseLevel = getLevel(score);
+  const baseLevelScore = appState.preComputedScores[baseLevel];
 
-  if (memoizedScores[baseLevel] === undefined) {
-    memoizedScores[baseLevel] =
-      preComputedScores[baseLevel + 1] - baseLevelScore;
+  if (appState.memoizedScores[baseLevel] === undefined) {
+    appState.memoizedScores[baseLevel] =
+      appState.preComputedScores[baseLevel + 1] - baseLevelScore;
   }
 
-  const scoreLevelDifference = memoizedScores[baseLevel];
+  const scoreLevelDifference = appState.memoizedScores[baseLevel];
   const scoreProgress = score - baseLevelScore;
   const res = scoreProgress / scoreLevelDifference + baseLevel;
 
