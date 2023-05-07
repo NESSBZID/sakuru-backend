@@ -12,11 +12,7 @@ import UsersSearch from '../dto/usersSearch.dto';
 import { hash as bcryptHash } from 'bcrypt';
 import UserCreate from '../dto/userCreate.dto';
 import * as md5 from 'md5';
-import {
-  getLevelPrecise,
-  makeSafeName,
-  toFixedNoRound,
-} from '@shared/shared.utils';
+import { getLevelPrecise, toFixedNoRound } from '../../app.utils';
 import { GameModes } from '@shared/enums/GameModes.enum';
 import { CustomClientTCP } from '@shared/tcp-client/customClient';
 import { catchError, firstValueFrom, take } from 'rxjs';
@@ -25,6 +21,8 @@ import IUserGraphsResponse from '@shared/interfaces/responses/userGraphs.interfa
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { IUserStatsResponse } from '../dto/userStats.dto';
+import { appState } from '../../app.state';
+import { makeSafeName } from '@shared/shared.utils';
 
 @Injectable()
 export class UsersServiceV1 {
@@ -195,7 +193,11 @@ export class UsersServiceV1 {
       `sakuru:firstplaces:${GameModes[mode]}:${user.id}`,
     );
 
-    const currentLevel = getLevelPrecise(userStats.tscore);
+    const currentLevel = getLevelPrecise(
+      appState.preComputedScores,
+      appState.memoizedScores,
+      Number(userStats.tscore),
+    );
     const nextLevelProgress = currentLevel.toString().split('.');
 
     return Object.assign(userStats, {
@@ -204,7 +206,7 @@ export class UsersServiceV1 {
       replay_views: replayViews,
       first_places: firstPlaces,
       level: {
-        current: toFixedNoRound(getLevelPrecise(userStats.tscore)),
+        current: toFixedNoRound(currentLevel),
         progress: nextLevelProgress[1] ? nextLevelProgress[1].slice(0, 2) : '0',
       },
     });

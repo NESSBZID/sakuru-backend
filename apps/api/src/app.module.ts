@@ -8,6 +8,7 @@ import { HttpModule } from '@shared/http/http.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Agent } from 'https';
 import entities from '@shared/entities';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import entities from '@shared/entities';
       useClass: ClassSerializerInterceptor,
     },
     Logger,
+    AppService,
   ],
   exports: [Logger, HttpModule],
 })
