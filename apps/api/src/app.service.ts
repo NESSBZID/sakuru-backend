@@ -17,7 +17,8 @@ export class AppService {
 
     // It is impossible for someone to get more than level 250
     for (let i = 101; i <= 250; i++) {
-      appState.preComputedScores[i] = 26931190829 + 100000000000 * (i - 100);
+      appState.preComputedScores[i] =
+        26_931_190_829 + 100_000_000_000 * (i - 100);
     }
   }
 }

@@ -68,7 +68,7 @@ export class StatisticsService {
         user_id: userId,
       },
       order: {
-        captured_at: 'ASC',
+        captured_at: 'DESC',
       },
     });
 
