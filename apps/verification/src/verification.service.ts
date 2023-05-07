@@ -19,20 +19,21 @@ export class VerificationService {
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(UserProfileHistory)
     private readonly userProfileHistoryRepository: Repository<UserProfileHistory>,
-    @InjectRedis('subscriber') private readonly redis: Redis,
+    @InjectRedis('subscriber') private readonly redisSubsricbe: Redis,
+    @InjectRedis('writer') private readonly redisWrite: Redis,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
     this.logger.log('Subscribing to Verification channel...');
 
-    await this.redis.subscribe('verification', (error, count) => {
+    await this.redisSubsricbe.subscribe('verification', (error, count) => {
       if (error)
         return this.logger.error(error.message, error?.stack, error?.name);
 
       this.logger.log(`Subscribed to ${count} channel(s).`);
     });
 
-    this.redis.on('message', async (channel, message) => {
+    this.redisSubsricbe.on('message', async (channel, message) => {
       if (channel !== 'verification') return;
 
       const parsedMessage: RedisVerificationMessage = JSON.parse(message);
@@ -55,17 +56,17 @@ export class VerificationService {
         });
 
         for (const mode in GameModes) {
-          if (!isNaN(Number(mode))) continue;
+          if (isNaN(Number(mode))) continue;
 
           // Add user to global leaderboard
-          const globalRank = await this.redis.zadd(
-            `sakuru:leaderboard:${mode}`,
+          const globalRank = await this.redisWrite.zadd(
+            `sakuru:leaderboard:${GameModes[mode]}`,
             0,
             user.id,
           );
           // Add user to country leaderboard
-          const countryRank = await this.redis.zadd(
-            `sakuru:leaderboard:${mode}:${user.country}`,
+          const countryRank = await this.redisWrite.zadd(
+            `sakuru:leaderboard:${GameModes[mode]}:${user.country}`,
             0,
             user.id,
           );

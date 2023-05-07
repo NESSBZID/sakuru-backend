@@ -17,8 +17,8 @@ import { UserProfileHistory } from '@shared/entities/userProfileHistory.entity';
           config: [
             {
               url: configService.get('REDIS_URL'),
-              connectionName: 'default',
-              namespace: 'default',
+              connectionName: 'writer',
+              namespace: 'writer',
               enableAutoPipelining: true,
             },
             {

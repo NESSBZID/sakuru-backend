@@ -58,7 +58,7 @@ export class UsersServiceV1 {
   }
 
   async findUser(clause: string | number): Promise<UserEntity> | null {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: [
         { id: clause as number },
         { safe_name: clause as string },
@@ -66,24 +66,40 @@ export class UsersServiceV1 {
         { name: clause as string },
       ],
     });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
   }
 
   async findById(user_id: number): Promise<UserEntity> | null {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id: user_id },
     });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
   }
 
   async findByEmail(email: string): Promise<UserEntity> | null {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { email: email },
     });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
   }
 
   async findBySafeName(safe_name: string): Promise<UserEntity> | null {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { safe_name: safe_name },
     });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
   }
 
   async creteUser(userCreateDto: UserCreate): Promise<UserEntity> {
@@ -127,7 +143,6 @@ export class UsersServiceV1 {
     mode: GameModes,
   ): Promise<IUserGraphsResponse> {
     const user = await this.findUser(userClause);
-    if (!userClause) throw new NotFoundException('User not found.');
 
     const observable = this.graphsService
       .send<IUserGraphsResponse, IUsersGraphsMessage>(
@@ -155,37 +170,29 @@ export class UsersServiceV1 {
   }
 
   async getUserStats(
-    user: string | number,
+    userClause: string | number,
     mode: GameModes,
   ): Promise<IUserStatsResponse> {
-    const { country: userCountry, id: userId } =
-      await this.userRepository.findOne({
-        select: ['country', 'id'],
-        where: [
-          { id: user as number },
-          { safe_name: user as string },
-          { name: user as string },
-        ],
-      });
+    const user = await this.findUser(userClause);
 
     const userStats = await this.statRepository.findOneBy({
-      id: userId,
+      id: user.id,
       mode: mode,
     });
 
     if (!userStats) throw new NotFoundException("User's stats not found.");
 
-    const globalRank = await this.getUserGlobalRank(userId, mode);
+    const globalRank = await this.getUserGlobalRank(user.id, mode);
     const countryRank = await this.getUserCountryRank(
-      userId,
+      user.id,
       mode,
-      userCountry,
+      user.country,
     );
     const replayViews = await this.redisClient.llen(
-      `sakuru:replay_views:${GameModes[mode]}:${userId}`,
+      `sakuru:replay_views:${GameModes[mode]}:${user.id}`,
     );
     const firstPlaces = await this.redisClient.llen(
-      `sakuru:firstplaces:${GameModes[mode]}:${userId}`,
+      `sakuru:firstplaces:${GameModes[mode]}:${user.id}`,
     );
 
     const currentLevel = getLevelPrecise(userStats.tscore);
